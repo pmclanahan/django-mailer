@@ -1,3 +1,8 @@
+import logging
+
+# setup logging if it wasn't already
+logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+
 VERSION = (0, 1, 0, "alpha")
 
 def get_version():

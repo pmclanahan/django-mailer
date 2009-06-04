@@ -55,5 +55,11 @@ You may want to set these up via cron to run regularly::
 
 This attempts to send mail every minute with a retry on failure every 20 minutes.
 
+If you have the logging module setup for your project, mailer will log to a logger
+named "mailer.*", where "*" will indicate the sub-module from which the message
+came. If you don't setup logging, messages will be logged to STDOUT, and the
+cron_mail*.log files mentioned above in the sample crontab lines will be used.
+Otherwise, you can safely remove those file references from the crontab lines.
+
 ``manage.py send_mail`` uses a lock file in case clearing the queue takes
 longer than the interval between calling ``manage.py send_mail``.
