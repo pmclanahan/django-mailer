@@ -16,6 +16,9 @@ EMPTY_QUEUE_SLEEP = getattr(settings, "MAILER_EMPTY_QUEUE_SLEEP", 30)
 # default behavior is to never wait for the lock to be available.
 LOCK_WAIT_TIMEOUT = getattr(settings, "MAILER_LOCK_WAIT_TIMEOUT", -1)
 
+# max number of mails to send at one time. set to 0 for no limit.
+MAX_MESSAGES = getattr(settings, "MAILER_MAX_MESSAGES", 0)
+
 logger = logging.getLogger('mailer.engine')
 
 def prioritize():
@@ -79,6 +82,9 @@ def send_all():
                     logger.info("message deferred due to failure: %s", err)
                     MessageLog.objects.log(message, 3, log_message=str(err)) # @@@ avoid using literal result code
                     deferred += 1
+                if MAX_MESSAGES and MAX_MESSAGES == sent + deferred:
+                    logger.info("stopped sending after reaching max of %d", MAX_MESSAGES)
+                    break
     finally:
         logger.debug("releasing lock...")
         lock.release()
